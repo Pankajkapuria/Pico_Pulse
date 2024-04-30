@@ -1,0 +1,121 @@
+.Account {
+    margin-top: 2vmax;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.AccountUpper {
+    width: 70%;
+    padding-bottom: 3.5vmax;
+}
+
+.AccountHeader {
+    display: grid;
+    grid-template-columns: 30% 1fr;
+}
+
+.AccountInFo {
+    display: flex;
+    flex-direction: column;
+    gap: 1.3vmax;
+    justify-content: center;
+}
+
+.AccountInfoHeader>p:nth-child(1) {
+    font-size: 1.3rem;
+    color: #000000de;
+    font-weight: 350;
+}
+
+
+
+.AccountInfoHeader>button:hover {
+    background-color: rgba(121, 109, 109, 0.231);
+}
+
+
+.AccountInfomid {
+    gap: 3.3vmax;
+}
+
+
+.AccountInfoHeader {
+    gap: 1.5vmax;
+}
+
+.AccountImg {
+    align-items: center;
+    justify-content: center;
+}
+
+
+.AccountInfoBio>p:nth-child(1) {
+    margin-bottom: 1vmax;
+}
+
+.AccountInfoBio>p:nth-child(2) {
+    font-size: 0.9rem;
+    color: rgba(36, 33, 33, 0.894);
+}
+
+.SuggestUser {
+    margin-top: 5vmax;
+    margin-left: 2vmax;
+}
+
+.SuggestUser>div:nth-child(1) {
+    color: rgba(71, 59, 59, 0.737);
+    justify-content: space-between;
+    margin-bottom: 1vmax;
+}
+
+.SuggestUser>div:nth-child(2) {
+    gap: 1vmax;
+    overflow-x: scroll;
+}
+
+.AccountPosts {
+    width: 100%;
+}
+
+.AccountPosts>div:nth-child(1) {
+    height: 3vmax;
+    justify-content: center;
+    align-items: center;
+}
+
+.AccountPosts>div:nth-child(2) {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5vmax;
+}
+
+.seenFollowerFollowing {
+    width: 27vmax;
+    height: 27vmax;
+    overflow-y: scroll;
+    gap: 1vmax;
+}
+
+
+@media only screen and (max-width:700px) {
+    .AccountUpper {
+        width: 90%;
+    }
+
+    .AccountHeader {
+        display: flex;
+        flex-direction: column;
+        gap: 5vmax;
+    }
+
+    .AccountPosts {
+        margin-top: 1vmax;
+    }
+
+    .seenFollowerFollowing {
+        width: 100%;
+    }
+}

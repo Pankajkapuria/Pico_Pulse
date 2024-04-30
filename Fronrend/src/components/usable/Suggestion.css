@@ -1,0 +1,40 @@
+.Suggestion {
+    border: 1px solid rgba(113, 98, 98, 0.401);
+    border-radius: 5px;
+    width: 11vmax;
+    height: 13vmax;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.1vmax;
+}
+
+.SuggestionProfile {
+    display: flex;
+    flex-direction: column;
+    gap: 1vmax;
+    align-items: center;
+}
+
+.SuggestionDetials {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1vmax;
+    font-size: 0.9em;
+}
+
+.SuggestionDetialsName {
+    text-align: center;
+}
+
+.SuggestionDetialsName>p:nth-child(1) {
+    color: #181919d6;
+    font-weight: 800;
+    margin-bottom: 0.3vmax;
+}
+
+.SuggestionDetialsName>p:nth-child(2) {
+    color: #1819198a;
+    font-weight: 300;
+}

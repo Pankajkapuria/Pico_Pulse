@@ -1,0 +1,37 @@
+.setProfile {
+    display: flex;
+    justify-content: center;
+}
+
+.setProfile>div {
+    width: 100%;
+}
+
+.setProfileflex {
+    display: flex;
+    gap: 2vmax
+}
+
+.setProfileflexLeft {
+    width: 30%;
+    text-align: end;
+}
+
+.setProfileflexright {
+    width: 35%;
+}
+
+.setImage {
+    width: 26vmax;
+}
+
+
+@media only screen and (max-width:800px) {
+    .setProfileflexright {
+        width: 55%;
+    }
+
+    .setImage {
+        width: 100%;
+    }
+}

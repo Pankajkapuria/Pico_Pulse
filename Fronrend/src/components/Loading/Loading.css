@@ -1,0 +1,8 @@
+.loading {
+    width: 100%;
+    gap: 1vmax;
+}
+
+.loadingInside {
+    width: 55%;
+}

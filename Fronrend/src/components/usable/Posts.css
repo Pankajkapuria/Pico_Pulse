@@ -1,0 +1,138 @@
+.Posts {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8vmax;
+    border-bottom: 1px solid rgba(66, 49, 49, 0.421);
+    margin-top: 1vmax;
+}
+
+.postHeader {
+    display: flex;
+    justify-content: space-between;
+}
+
+.postHeader>a {
+    display: flex;
+    height: 3.3vmax;
+    align-items: center;
+    gap: 0.8vmax;
+}
+
+.PostHeaderContant {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.postContainer {
+    height: 31vmax;
+}
+
+
+.postfooterIcon {
+    display: flex;
+    gap: 1vmax;
+}
+
+.postfooterIcon>p {
+    cursor: pointer;
+}
+
+.postfooterIcon>p:hover {
+    color: rgba(53, 42, 42, 0.798);
+}
+
+.postfooter {
+    margin-bottom: 1.5vmax;
+}
+
+.caption {
+    font-size: 0.9em;
+    color: #181919a7;
+    font-weight: 500;
+}
+
+.likes {
+    cursor: pointer;
+}
+
+.dialogBox {
+    width: 23vmax;
+    height: 27vmax;
+
+}
+
+.dialogBoxuser {
+    display: flex;
+    flex-direction: column;
+    gap: 2vmax;
+    margin-top: 0.6vmax;
+}
+
+.dialogBox>p,
+.dialogBoxComments>p {
+    text-align: center;
+    padding: 0.6vmax;
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.dialogBoxComments {
+    width: 35vmax;
+    height: 34vmax;
+    overflow-y: scroll;
+}
+
+.postUser {
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.postUserImg {
+    display: flex;
+    align-items: center;
+    gap: 0.6vmax;
+}
+
+.postUserImg>a {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.addComment {
+    display: flex;
+    padding: 0.5rem 1rem 0.5rem 1rem
+}
+
+.addComment>input {
+    border: none;
+}
+
+
+.NoPost {
+    text-align: center;
+}
+
+@media only screen and (max-width:700px) {
+    .postContainer {
+        height: 46vmax;
+    }
+
+    .Posts {
+        margin-top: 3vmax;
+    }
+
+    .postOptions {
+        width: 36vmax;
+    }
+
+    .dialogBox {
+        width: 100%;
+        height: 47vmax;
+    }
+
+    .postOptions {
+        width: 100%;
+    }
+}

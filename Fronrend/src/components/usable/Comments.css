@@ -1,0 +1,44 @@
+.CommentContians {
+    display: flex;
+    gap: 0.6vmax;
+    margin: 1rem;
+}
+
+.Commentavter {
+    width: 2.5vmax;
+    height: 2.5vmax;
+    border-radius: 100%;
+    object-fit: cover;
+}
+
+.CommentUser>a {
+    font-size: 0.8rem;
+}
+
+.CommentUser>a>span {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.CommentTime {
+    display: flex;
+    align-items: center;
+    gap: 1.5vmax
+}
+
+.CommentOptionsDialog {
+    width: 25vmax;
+    text-align: center;
+}
+
+@media only screen and (max-width:700px) {
+    .CommentOptionsDialog {
+        width: 100%;
+    }
+
+    .dialogBoxComments {
+        width: 100%;
+    }
+
+
+}

@@ -163,10 +163,10 @@ app.use('/api/v1/user', userrouter);
 app.use('/api/v1/message', messageRouters)
 app.use('/api/v1/notification', NotificationRouter)
 
-app.use(express.static(path.join(__dirname, "../Fronrend/app/build")));
+app.use(express.static(path.join(__dirname, "../Fronrend/build")));
 
 app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "../Fronrend/app/build/index.html"));
+    res.sendFile(path.resolve(__dirname, "../Fronrend/build/index.html"));
 });
 
 module.exports = server;

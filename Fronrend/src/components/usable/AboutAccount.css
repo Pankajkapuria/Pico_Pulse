@@ -1,0 +1,45 @@
+.aboutAccount {
+    width: 33vmax;
+    height: 37vmax;
+    display: grid;
+    grid-template-rows: 10% 1fr 10%;
+}
+
+.aboutAccountcontant {
+    margin-top: 1vmax;
+    display: grid;
+    grid-template-rows: 65% 1fr;
+}
+
+.aboutAccountcontant>div:nth-child(1) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1vmax;
+}
+
+.aboutAccountcontant>div:nth-child(2) {
+    margin-top: 2vmax;
+    margin-left: 1vmax;
+    display: flex;
+    gap: .5vmax;
+}
+
+.datejoin {
+    display: flex;
+    flex-direction: column;
+}
+
+@media only screen and (max-width:850px) {
+    .aboutAccount {
+        width: 55vmax;
+        height: 35vmax;
+    }
+}
+
+@media only screen and (max-width:700px) {
+    .aboutAccount {
+        width: 100%;
+        height: 55vmax;
+    }
+}

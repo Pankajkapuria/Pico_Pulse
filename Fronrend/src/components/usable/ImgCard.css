@@ -1,0 +1,12 @@
+.ImgCard {
+    background-color: aqua;
+    width: 20vmax;
+    height: 20vmax;
+    cursor: pointer;
+}
+
+.postDialog {
+    width: 100%;
+    min-height: 50vh;
+    padding: 0vmax 0.2vmax;
+}

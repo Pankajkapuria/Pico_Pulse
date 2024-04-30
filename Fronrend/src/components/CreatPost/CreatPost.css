@@ -1,0 +1,125 @@
+.fileSelect {
+    width: 32vmax;
+    height: 35vmax;
+    color: black;
+}
+
+.fileSelectUpper {
+    text-align: center;
+    padding: 0.7vmax 0.3vmax;
+    border-bottom: 1px solid rgba(114, 102, 102, 0.350);
+    font-weight: 500;
+}
+
+.fileSelectDown {
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2vmax;
+}
+
+.fileSelectDown>input {
+    margin-left: 5vmax;
+}
+
+.PhotoIcon>svg {
+    transform: rotate(10deg);
+}
+
+.postCreat {
+    width: 53vmax;
+    height: 35vmax;
+    display: grid;
+    grid-template-rows: 3vmax 1fr;
+    overflow-x: inherit;
+    overflow-y: clip;
+}
+
+.postCreatUpper {
+    border-bottom: 1px solid rgba(114, 102, 102, 0.350);
+    padding: 0vmax 3vmax;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.postCreatDown {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 32vmax 1fr;
+    color: black;
+}
+
+.creatImg>img {
+    width: 100%;
+    height: 100%;
+    object-fit: unset
+}
+
+.textarea {
+    border-bottom: 1px solid rgba(114, 102, 102, 0.350);
+}
+
+.textarea>textarea {
+    font-size: 0.9rem;
+    padding: 0px 1.1vmax;
+    width: 100%;
+    height: 10vmax;
+    resize: none;
+    border: none;
+    outline: none;
+}
+
+
+.textarea>p {
+    padding: 0.5rem 0.5vmax;
+    text-align: end;
+    font-size: 0.8rem;
+    color: rgba(116, 106, 106, 0.597);
+}
+
+.creatImgOptions_dp {
+    padding: 1.1vmax;
+    display: flex;
+    gap: 1vmax;
+    font-weight: 450;
+    font-size: 0.9rem;
+}
+
+.creatImgOptions {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+}
+
+.addlocation {
+    display: flex;
+    padding: 0.5rem 0.5vmax;
+    border-bottom: 1px solid rgba(114, 102, 102, 0.350);
+}
+
+@media only screen and (max-width:700px) {
+    .fileSelect {
+        width: 100%;
+        height: 60vmax;
+        overflow: hidden;
+    }
+
+    .postCreat {
+        width: 100%;
+        height: 70vmax;
+    }
+
+    .postCreatDown {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .fileSelectUpper {
+        padding: 10px 0px;
+    }
+}

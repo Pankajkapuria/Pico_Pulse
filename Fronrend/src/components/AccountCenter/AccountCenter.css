@@ -1,0 +1,29 @@
+.AccountSettingBar {
+    width: 40%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    box-shadow: 2px 0px 3px rgba(22, 10, 10, 0.218)
+}
+
+.SettingBar {
+    width: 70%;
+}
+
+.AccountSettingContant {
+    width: 50%;
+}
+
+@media only screen and (max-width:700px) {
+    .AccountSettingBar {
+        width: 35%;
+    }
+
+    .SettingBar {
+        width: 95%;
+    }
+
+    .AccountSettingContant {
+        width: 65%;
+    }
+}

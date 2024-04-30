@@ -1,0 +1,29 @@
+.post {
+    justify-content: space-between;
+}
+
+.postDetials {
+    gap: 1vmax;
+    font-size: 0.9em;
+}
+
+
+.postDetialsName>p:nth-child(1) {
+    color: rgba(23, 26, 26, 0.839);
+    font-weight: 800;
+}
+
+.postDetialsName>p:nth-child(2) {
+    color: #1819198a;
+    font-weight: 300;
+}
+
+.postbtn {
+    font-size: 0.9em;
+    font-weight: 500;
+    color: #0993bde7;
+}
+
+.postbtn:hover {
+    color: #1f2d36e7;
+}

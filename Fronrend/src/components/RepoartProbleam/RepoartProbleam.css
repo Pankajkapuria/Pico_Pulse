@@ -1,0 +1,24 @@
+.ReportProblemMain {
+    height: 98vh;
+}
+
+.ReportProblem {
+    width: 40%;
+    padding: 3.5vmax;
+}
+
+@media only screen and (min-width:700px) and (max-width:1200px) {
+    .ReportProblem {
+        width: 70%;
+    }
+}
+
+@media only screen and (max-width:700px) {
+    .ReportProblem {
+        width: 90%;
+    }
+
+    .reportTextArea {
+        height: 20vmax !important;
+    }
+}

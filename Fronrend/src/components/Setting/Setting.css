@@ -1,0 +1,41 @@
+.settingContant {
+    display: flex;
+    gap: 10vmax;
+}
+
+.settingLeft {
+    width: 33%;
+}
+
+.settingLeft>div {
+    box-shadow: 5px 5px 15px rgb(208, 205, 205);
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.settingright {
+    box-shadow: 5px 5px 15px rgb(208, 205, 205);
+    border-radius: 5px;
+    width: 50%;
+}
+
+.AccountCenter {
+    flex-direction: column;
+}
+
+.AccountCenter>p {
+    display: flex;
+}
+
+@media only screen and (max-width:950px) {
+
+    .settingContant {
+        flex-direction: column;
+        gap: 5vmax;
+    }
+
+    .settingLeft,
+    .settingright {
+        width: 100%;
+    }
+}
