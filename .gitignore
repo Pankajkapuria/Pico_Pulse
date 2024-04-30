@@ -5,7 +5,7 @@
 /node_modules
 
 /Backend/Config/config.env
-/Fronrend/app/.env
+# /Fronrend/app/.env
 
 
 # testing
