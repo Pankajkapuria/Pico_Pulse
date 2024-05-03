@@ -104,8 +104,8 @@ a {
 @media only screen and (max-width:700px) {
     .header {
         height: 7vh;
-        position: fixed;
-        top: 93.5vh;
+        position: sticky;
+        bottom: 0px;
         background-color: white;
         width: 100%;
         border: none;
