@@ -52,6 +52,7 @@ message.on('connection', (socket) => {
         }
     })
 
+
     socket.on(Actions.SEND_MESSAGE, (data) => {
         const sender = Messageusers.find(user => user.userId === data.sender);
         const receiver = Messageusers.find(user => user.userId === data.receiver);
@@ -67,12 +68,16 @@ message.on('connection', (socket) => {
     })
 
 
-    socket.on(Actions.CALL_SEND, ({ offer, userId }) => {
+
+
+
+    socket.on('offer', ({ offer, userId }) => {
         const isUserExist = Messageusers.find(user => user.userId === userId);
+        const self = Messageusers.find(user => user.socketId === socket.id)
         if (isUserExist) {
-            socket.to(isUserExist.socketId).emit(Actions.INCOMING_CALL, {
+            socket.to(isUserExist.socketId).emit('offer', {
                 socketId: socket.id,
-                userId,
+                userId: self.socketId,
                 offer
             })
         }
@@ -83,30 +88,35 @@ message.on('connection', (socket) => {
         }
     })
 
-    socket.on(Actions.CALL_REJECTED, ({ socketId }) => {
+    socket.on(Actions.CALL_REJECTED, ({ socketId, message }) => {
         socket.to(socketId).emit(Actions.CALL_REJECTED, {
-            msg: 'user busy...'
+            msg: message
         })
     })
-    socket.on(Actions.CALL_AECPTED, ({ userId, socketId, answer }) => {
-        message.to(socketId).emit(Actions.CALL_AECPTED, {
+
+    socket.on('condiate', ({ condiate, userId, socketId }) => {
+        if (socketId) {
+            socket.to(socketId).emit('condiate', { condiate, socketId: socket.id, userId })
+        }
+        else {
+            const isUserExist = Messageusers.find(user => user.userId === userId);
+            if (isUserExist) {
+                socket.to(isUserExist.socketId).emit('condiate', { condiate, socketId: socket.id, userId })
+            }
+            // else {
+            //     message.to(socket.id).emit(Actions.CALL_REJECTED, {
+            //         msg: 'user is offline'
+            //     })
+            // }
+        }
+
+    })
+
+    socket.on('answer', ({ userId, socketId, answer }) => {
+        message.to(socketId).emit('answer', {
             socketId: socket.id,
             answer,
             userId
-        })
-    })
-
-    socket.on(Actions.PEER_NEGO_NEEDED, ({ socketId, offer }) => {
-        socket.to(socketId).emit(Actions.PEER_NEGO_NEEDED, {
-            socketId: socket.id,
-            offer
-        })
-    })
-
-    socket.on(Actions.PEER_NEGO_DONE, ({ socketId, answer }) => {
-        socket.to(socketId).emit(Actions.PEER_NEGO_FINAL, {
-            socketId: socket.id,
-            answer
         })
     })
 

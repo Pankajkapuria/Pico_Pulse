@@ -9,7 +9,7 @@ import Loading from '../Loading/Loading'
 import { io } from 'socket.io-client'
 import axios from 'axios'
 import Actions from '../../Actions/EventActions'
-import peer from './Peer'
+// import peer from './Peer'
 import { toast } from 'react-hot-toast'
 import { Dialog } from '@mui/material'
 import ReactPlayer from 'react-player'
@@ -19,12 +19,12 @@ const Messages = () => {
     const params = useParams();
     const dispatch = useDispatch();
     const socket = useRef({});
-    const [users, setusers] = useState([]);
+    const peerConection = useRef({});
+    // const [users, setusers] = useState([]);
     const [inbox, setinbox] = useState('');
     const [AllMessage, setAllMessage] = useState([]);
     const [Contacts, setContacts] = useState(false);
     const [remoteUser, setremoteUser] = useState();
-    const [streamSend, setstreamSend] = useState(false)
     const [mystream, setmystream] = useState(null);
     const [remotestream, setremotestream] = useState(null);
     const [videoDialog, setvideoDialog] = useState(false);
@@ -44,6 +44,14 @@ const Messages = () => {
             timeout: 10000,
             transports: ['websocket']
         })
+
+        // socket.current = io(`http://localhost:5051/message`, {
+        //     reconnectionAttempts: 'Infinity',
+        //     timeout: 10000,
+        //     transports: ['websocket']
+        // })
+
+
     }, [])
 
     useEffect(() => {
@@ -51,7 +59,7 @@ const Messages = () => {
         socket.current?.emit(Actions.JOIN, user.user._id);
 
         socket.current?.on(Actions.JOINED, ({ Messageusers }) => {
-            setusers(Messageusers);
+            // setusers(Messageusers);
         })
 
         return () => {
@@ -151,18 +159,59 @@ const Messages = () => {
                 let stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true })
                 setmystream(stream)
 
-                if (peer.peer.signalingState !== 'closed') {
-                    const offer = await peer.getOffer();
-                    socket.current?.emit(Actions.CALL_SEND, {
-                        offer: offer,
-                        userId: message?.conversionUser?._id
-                    })
-                }
-                else {
-                    toast.error('try after some time')
-                    setvideoDialog(false)
+                peerConection.current = new RTCPeerConnection({
+                    iceServers: [
+                        {
+                            urls: [
+                                "stun:stun.l.google.com:19302",
+                                "stun:global.stun.twilio.com:3478",
+                            ],
+                        },
+                    ],
+                })
+
+                peerConection.current.onicecandidate = (event) => {
+                    console.log('on ice condiante in call send got !!!')
+                    if (event.candidate) {
+                        socket.current.emit('condiate', { condiate: event.candidate, userId: message?.conversionUser?._id })
+                    }
                 }
 
+                peerConection.current.ontrack = (event) => {
+                    const remoteStream = event.streams
+                    remoteStream[0].getTracks().forEach(track => {
+                        console.log(track, 'remote track')
+                    })
+                    setremotestream(remoteStream[0])
+                }
+
+                if (stream) {
+                    stream.getTracks().forEach(track => {
+                        console.log(track, 'add')
+                        peerConection.current.addTrack(track, stream)
+                    })
+                }
+
+                peerConection.current.oniceconnectionstatechange = function (event) {
+                    if (peerConection.current.iceConnectionState === 'disconnected' || peerConection.current.iceConnectionState === 'closed') {
+                        peerConection.current.getSenders()?.forEach(sender => {
+                            sender.track?.stop();
+                        });
+                        peerConection.current.close()
+                        peerConection.current.oniceconnectionstatechange = null;
+                        peerConection.current.ontrack = null;
+                        peerConection.current = null;
+                        setvideoDialog(false)
+                        peerConection.current = null
+                    }
+                }
+
+                peerConection.current.createOffer((offer) => {
+                    peerConection.current.setLocalDescription(offer)
+                    socket.current.emit('offer', { offer, userId: message?.conversionUser?._id })
+                }, (error) => {
+                    alert('error for creating offer')
+                })
             }
             catch (error) {
                 toast.error(error?.message)
@@ -176,58 +225,81 @@ const Messages = () => {
         }
     }
 
-    const sendStream = useCallback(() => {
-        let setled = false;
-        const interval = setInterval(() => {
-            if (mystream) {
-                for (const track of mystream.getTracks()) {
-                    console.log('track add')
-                    peer.peer.addTrack(track, mystream);
-                }
-                setled = true
-            }
-            if (setled) {
-                clearInterval(interval)
-            }
-        }, 1000);
-    }, [mystream])
-
-
     const Incoingclall = useCallback(async ({ socketId, userId, offer }) => {
         setremoteUser(socketId);
         try {
+            console.log('offer')
             setvideoDialog(true);
-            let stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
-            setmystream(stream);
-            const answer = await peer.getAnswer(offer);
-            socket.current.emit(Actions.CALL_AECPTED, {
-                socketId,
-                userId,
-                answer
+            peerConection.current = new RTCPeerConnection({
+                iceServers: [
+                    {
+                        urls: [
+                            "stun:stun.l.google.com:19302",
+                            "stun:global.stun.twilio.com:3478",
+                        ],
+                    },
+                ],
+            });
+
+            peerConection.current.onicecandidate = (event) => {
+                console.log('on ice condiante in recive got !!!')
+                if (event.candidate) {
+                    socket.current.emit('condiate', { condiate: event.candidate, userId, socketId })
+                }
+            }
+
+            peerConection.current.ontrack = (event) => {
+                const remoteStream = event.streams
+                remoteStream[0].getTracks().forEach(track => {
+                    console.log(track, 'remote track')
+                })
+                setremotestream(remoteStream[0])
+            }
+
+            peerConection.current.setRemoteDescription(offer);
+
+            let stream1 = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+            setmystream(stream1);
+            if (stream1) {
+                stream1.getTracks().forEach(track => {
+                    console.log(track, 'add')
+                    peerConection.current.addTrack(track, stream1)
+                })
+            }
+
+            // for call end
+            peerConection.current.oniceconnectionstatechange = function (event) {
+                if (peerConection.current.iceConnectionState === 'disconnected' || peerConection.current.iceConnectionState === 'closed') {
+                    peerConection.current.getSenders()?.forEach(sender => {
+                        console.log(sender)
+                        sender.track?.stop();
+                    });
+                    peerConection.current.close()
+                    peerConection.current.oniceconnectionstatechange = null;
+                    peerConection.current.ontrack = null;
+                    peerConection.current = null;
+                    setvideoDialog(false)
+                    peerConection.current = null
+                }
+            }
+
+            peerConection.current.createAnswer((answer) => {
+                peerConection.current.setLocalDescription(answer);
+                socket.current.emit('answer', { answer, userId, socketId })
+            }, (error) => {
+                alert('error for creating answer')
             })
         }
         catch (error) {
             toast.error(error?.message)
+            socket.current.emit(Actions.CALL_REJECTED, { socketId, message: 'try after some time' })
             setvideoDialog(false)
         }
+
+
     }, [socket])
 
 
-    const hendelcallAccepeted = useCallback(async ({ socketId, userId, answer }) => {
-        setremoteUser(socketId);
-        await peer.setLocalDescripti(answer);
-        sendStream();
-        setstreamSend(true)
-    }, [sendStream])
-
-    const negoIncoming = useCallback(async ({ socketId, offer }) => {
-        const answer = await peer.getAnswer(offer);
-        socket.current?.emit(Actions.PEER_NEGO_DONE, { socketId, answer })
-    }, [])
-
-    const negofinal = useCallback(async ({ answer }) => {
-        await peer.setLocalDescripti(answer);
-    }, [])
 
 
     useEffect(() => {
@@ -235,50 +307,45 @@ const Messages = () => {
             setvideoDialog(false)
             toast.error(msg)
         })
-        socket.current?.on(Actions.INCOMING_CALL, Incoingclall)
-        socket.current?.on(Actions.CALL_AECPTED, hendelcallAccepeted)
-        socket.current?.on(Actions.PEER_NEGO_NEEDED, negoIncoming)
-        socket.current?.on(Actions.PEER_NEGO_FINAL, negofinal)
-
-
+        socket.current?.on('offer', Incoingclall)
         return () => {
             socket.current?.off(Actions.CALL_REJECTED)
-            socket.current?.off(Actions.INCOMING_CALL, Incoingclall)
-            socket.current?.off(Actions.CALL_AECPTED, hendelcallAccepeted)
-            socket.current?.off(Actions.PEER_NEGO_NEEDED, negoIncoming)
-            socket.current?.off(Actions.PEER_NEGO_FINAL, negofinal)
-
+            socket.current?.off('offer', Incoingclall)
         }
 
-    }, [Incoingclall, hendelcallAccepeted, negoIncoming, negofinal])
+    }, [Incoingclall])
 
-    const handleNegoNeeded = useCallback(async () => {
-        const offer = await peer.getOffer();
-        socket.current?.emit(Actions.PEER_NEGO_NEEDED, { offer, socketId: remoteUser });
-    }, [remoteUser, socket]);
 
     useEffect(() => {
-        peer.peer.addEventListener(Actions.NEGOTIATIONNEEDED, handleNegoNeeded);
+        if (socket.current) {
+            socket.current.on('answer', ({ answer, socketId, userId }) => {
+                setremoteUser(socketId);
+                console.log('answer')
+                peerConection.current.setRemoteDescription(answer)
+            })
 
+            socket.current.on('condiate', ({ condiate, socketId }) => {
+                console.log('condiate got !!!')
+                var iceCandidate = new RTCIceCandidate(condiate);
+                peerConection.current.addIceCandidate(iceCandidate);
+            })
+        }
         return () => {
-            peer.peer.removeEventListener(Actions.NEGOTIATIONNEEDED, handleNegoNeeded);
+            socket.current.off('answer')
         }
-    }, [handleNegoNeeded])
+    }, [])
 
 
-    useEffect(() => {
-        peer.peer.addEventListener("track", async (ev) => {
-            const remoteStream = ev.streams;
-            console.log("GOT TRACKS!!", remoteStream);
-            setremotestream(remoteStream[0]);
-        });
-    }, [remotestream]);
 
     const endCall = () => {
-        peer.peer.getSenders().forEach(sender => {
-            sender.track.stop();
+        peerConection.current.getSenders().forEach(sender => {
+            sender.track?.stop();
         });
-        peer.peer.close()
+        peerConection.current.close()
+        peerConection.current.oniceconnectionstatechange = null;
+        peerConection.current.ontrack = null;
+        peerConection.current = null;
+
         setvideoDialog(false)
     }
 
@@ -287,8 +354,6 @@ const Messages = () => {
             const audioTrack = mystream.getAudioTracks()[0];
             if (audioOnOff) {
                 setaudioOnOff(false)
-                // const sender = peer.peer.getSenders().find(sender => sender.track.kind === 'audio');
-                // peer.peer.removeTrack(sender);
                 audioTrack.enabled = false;
             }
             else {
@@ -318,20 +383,6 @@ const Messages = () => {
             toast.error(error.message)
         }
     }
-
-    useEffect(() => {
-        peer.peer.oniceconnectionstatechange = function (event) {
-            if (peer.peer.iceConnectionState === 'disconnected') {
-                peer.peer.getSenders().forEach(sender => {
-                    sender.track.stop();
-                });
-
-                peer.peer.close()
-                setvideoDialog(false)
-            }
-        }
-    }, [])
-
 
 
     return (
@@ -448,30 +499,16 @@ const Messages = () => {
                 setvideoDialog(false);
             }}>
 
-                {remoteUser && streamSend === false && <div id='button' className='pp d-flex f-d-col align-items' >
-                    <p className='p3 '>Incoming call...</p>
-                    <img className='img2' src={message?.conversionUser.avater.url} alt='img' />
-                    <div className='mtb'><button className='btn2 bg5' onClick={() => {
-                        setstreamSend(true)
-                        sendStream();
-                        document.getElementById('button').style.display = 'none'
-                    }}>accepted</button>
-
-                        <button className='btn2 bg6 ml1' onClick={() => {
-                            setvideoDialog(false)
-                            document.getElementById('button').style.display = 'none'
-                            socket.current.emit(Actions.CALL_REJECTED, { socketId: remoteUser })
-                        }}>reject</button></div>
-                </div>}
+                <div id='callAccepted'></div>
 
                 <div>
                     <div className="video ">
                         <div className="videoStream">
                             <div className="remoteStream">
-                                {remotestream ? <ReactPlayer width="100%" height="100%" playing url={remotestream} /> : <p>call forword</p>}
+                                {remotestream ? <ReactPlayer playing width="100%" height="100%" url={remotestream} /> : <p>call forword</p>}
                             </div>
                             <div className="myStream">
-                                {<ReactPlayer playing muted width="100%" height="100%" url={mystream} />}
+                                {<ReactPlayer playing volume={0} muted width="100%" height="100%" url={mystream} />}
                             </div>
                         </div>
                         <div className="videoHeandleBth d-flex justify-content align-items">

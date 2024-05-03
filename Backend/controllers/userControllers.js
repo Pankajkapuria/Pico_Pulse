@@ -81,9 +81,11 @@ exports.logincontroller = async (req, res) => {
         let user = '';
 
         user = await usermodel.findOne({ email: Id }).select("+password");
+
         if (!user) {
             user = await usermodel.findOne({ UserId: Id }).select("+password");
         }
+
 
         if (!user) {
             return res.status(400).json({ sucess: false, message: 'Id not found please register first.' });
