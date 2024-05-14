@@ -435,4 +435,8 @@
         margin: 0px !important;
         max-height: 100% !important;
     }
+
+    .MuiSvgIcon-root {
+        font-size: 1.5rem !important;
+    }
 }

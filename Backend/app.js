@@ -179,6 +179,6 @@ app.get("*", (req, res) => {
     res.sendFile(path.resolve(__dirname, "../Fronrend/build/index.html"));
 });
 
-module.exports = server;
+module.exports = app;
 
 

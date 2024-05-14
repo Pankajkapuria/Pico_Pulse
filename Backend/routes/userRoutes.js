@@ -14,7 +14,8 @@ const { userregister,
     popular,
     AboutUser,
     getfollowAndFollowing,
-    GetAllUsers } = require('../controllers/userControllers.js')
+    GetAllUsers,
+    verifyAccount } = require('../controllers/userControllers.js')
 
 const userrouter = express.Router();
 const { isAuthenticated } = require('../middlewares/auth.js')
@@ -24,6 +25,7 @@ const { isAuthenticated } = require('../middlewares/auth.js')
 
 
 userrouter.route('/register').post(userregister);
+userrouter.route('/verify/:verificationCode').post(verifyAccount);
 userrouter.route('/login').post(logincontroller);
 userrouter.route('/logout').get(isAuthenticated, logOutController);
 userrouter.route('/password_update').put(isAuthenticated, updatePassword);

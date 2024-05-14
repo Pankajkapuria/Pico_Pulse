@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const cloudinary = require('cloudinary');
 const conversionmodel = require('../Config/models/conversionId.js');
 const messagemodel = require('../Config/models/Message.js');
+const validator = require('email-validator');
 
 exports.userregister = async (req, res) => {
     try {
@@ -15,6 +16,11 @@ exports.userregister = async (req, res) => {
         }
         if (password.length < 6) {
             return res.status(201).json({ sucess: false, message: 'password should be atlest 6 charactor' });
+        }
+
+        const isValid = validator.validate(email);
+        if (!isValid) {
+            return res.status(500).json({ sucess: false, message: 'Please! Enter valid email for registration' });
         }
 
         let user = await usermodel.findOne({ email });
@@ -33,38 +39,89 @@ exports.userregister = async (req, res) => {
 
 
         const mycloud = await cloudinary.v2.uploader.upload(avater, {
-            folder: 'profile profile'
+            folder: 'profile'
         })
+
+        const verificationCode = 1000 + Math.floor(Math.random() * 9000)
 
         user = await usermodel.create({
             name, email, password, UserId, avater: {
                 public_id: mycloud.public_id,
                 url: mycloud.secure_url
             }
+            ,
+            verified: false,
+            verificationCode
         });
 
 
-        const token = await user.creatToken();
+        await sendEmail({
+            email: email,
+            subject: 'Picopulse verificationCode. ',
+            message: `your verificationCode is ${verificationCode}`,
+        })
+
+
+        setTimeout(async () => {
+            user = await usermodel.findById(user._id);
+            if (!user.verified) {
+                await usermodel.findByIdAndDelete(user._id)
+            }
+        }, 10 * 60 * 1000);
+
+
         options = {
             expiresIn: '1d',
             httpOnly: true
         }
 
-        res.status(201).cookie('token', token, options).json({
+        res.status(201).cookie('token', options).json({
             sucess: true,
-            user,
-            token
+            message: 'Registration successful. Please verify your email.'
         })
 
     }
     catch (error) {
-        console.log(error.message)
         res.status(500).json({
             success: false,
             message: error.message
         })
     }
 }
+
+exports.verifyAccount = async (req, res) => {
+    try {
+        const verificationCode = req.params.verificationCode;
+        const { email } = req.body
+
+        const user = await usermodel.findOne({ email });
+        if (!user || user.verificationCode !== verificationCode) {
+            return res.status(404).json({
+                sucess: false,
+                message: 'Verification code are wrong.'
+            })
+        }
+        const token = await user.creatToken();
+
+        user.verified = true
+        user.verificationCode = null;
+        await user.save();
+
+        res.status(201).json({
+            sucess: true,
+            user,
+            token,
+            message: 'Verification SucessFully'
+        })
+    }
+    catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+};
 
 exports.logincontroller = async (req, res) => {
     try {
@@ -112,7 +169,6 @@ exports.logincontroller = async (req, res) => {
 
     }
     catch (error) {
-        console.log(error)
         res.status(500).json({
             success: false,
             message: error.message
@@ -210,7 +266,6 @@ exports.updateProfile = async (req, res) => {
         })
     }
     catch (error) {
-        console.log(error)
         res.status(500).json({
             success: false,
             message: error.message
@@ -350,7 +405,6 @@ exports.userDelete = async (req, res) => {
                 if (anotherUsers.message[j].user.toString() === req.user._id.toString()) {
                     anotherUsers.message.splice(j, 1);
 
-                    console.log(anotherUsers.message[j].conversionId);
                     await conversionmodel.findByIdAndDelete(anotherUsers.message[j].conversionId);
                     await messagemodel.findOneAndDelete({ conversionId: anotherUsers.message[j].conversionId.toString() })
                 }
@@ -358,11 +412,6 @@ exports.userDelete = async (req, res) => {
             await anotherUsers.save()
 
         }
-
-
-
-
-
         res.status(201).json({
             sucess: true,
             message: "Account Delete"
@@ -476,7 +525,7 @@ exports.forgetPassword = async (req, res) => {
             await sendEmail({
                 email: email,
                 subject: 'Reset password',
-                message: message
+                message: message,
             })
             res.status(201).json({
                 success: true,
@@ -484,19 +533,24 @@ exports.forgetPassword = async (req, res) => {
             })
         }
         catch (error) {
-            console.log(error)
             user.resetPasswordToken = undefined
             user.resetPasswordexpire = undefined
             await user.save();
-            res.status(500).json({
-                success: false,
-                message: error.message
-            })
+            if (error?.message === 'No recipients defined') {
+                res.status(500).json({
+                    success: false,
+                    message: "enter valid email"
+                })
+            }
+            else {
+                res.status(500).json({
+                    success: false,
+                    message: error.message
+                })
+            }
         }
-
     }
     catch (error) {
-
         res.status(500).json({
             success: false,
             message: error.message

@@ -67,16 +67,15 @@ export const registerUser = (email, name, userName, password, chackUser) => asyn
                 payload: data
             })
         }
-        else {
-
-            if (data) {
-                localStorage.setItem('token', data.token)
-            }
-            dispatch({
-                type: "registerSucess",
-                payload: data
-            })
-        }
+        // else {
+        //     if (data) {
+        //         localStorage.setItem('token', data.token)
+        //     }
+        //     dispatch({
+        //         type: "registerSucess",
+        //         payload: data
+        //     })
+        // }
 
         dispatch({
             type: "registerClearError"

@@ -20,6 +20,7 @@ import Help from './components/Help/Help.js';
 import ResetPassword from './components/Reset_Password/Reset_Password_Link.js';
 import PasswordReset from './components/Reset_Password/Password_Reset.js';
 import RepoartProbleam from './components/RepoartProbleam/RepoartProbleam.js';
+import Verify from './components/Register/verify.js';
 
 
 function App() {
@@ -78,13 +79,14 @@ function App() {
 
       <div className="section">
         <div>
-          {(location.pathname === '/account/login' || location.pathname === '/account/signUp' || location.pathname.includes('/user/password/reset')) ? <></> : <Header />}
+          {(location.pathname === '/account/login' || location.pathname === '/account/signUp' || location.pathname === '/verify/Account' || location.pathname.includes('/user/password/reset')) ? <></> : <Header />}
 
 
           <div className='contant'>
             <Routes>
               <Route path='/' element={<Home Notifactionsocket={Notifactionsocket.current} />} />
               <Route path='/account/signUp' element={<Register />} />
+              <Route path='/verify/Account' element={<Verify />} />
               <Route path='/account/login' element={<Login />} />
               <Route path='/passwordRecovery' element={<ResetPassword />} />
               <Route path='/user/password/reset/:resetToken' element={<PasswordReset />} />

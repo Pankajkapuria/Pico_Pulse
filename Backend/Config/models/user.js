@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const { type } = require("os");
 
 
 const userschama = new mongoose.Schema({
@@ -69,6 +70,12 @@ const userschama = new mongoose.Schema({
     },
     resetPasswordexpire: {
         type: Date
+    },
+    verified: {
+        type: Boolean
+    },
+    verificationCode: {
+        type: String
     }
 }, {
     timestamps: true

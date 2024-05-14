@@ -1,0 +1,21 @@
+.Verify {
+    width: 30vw;
+    gap: 3vmax;
+}
+
+.codeInput {
+    width: 50%;
+    height: 30px;
+}
+
+@media only screen and (max-width:900px) {
+    .Verify {
+        width: 80vw;
+        gap: 3vmax;
+    }
+
+    .codeInput {
+        width: 80%;
+        height: 30px;
+    }
+}
