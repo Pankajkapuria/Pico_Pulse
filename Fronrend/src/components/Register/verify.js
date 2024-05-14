@@ -44,7 +44,7 @@ const Verify = () => {
     }
 
     return (
-        <div className='d-flex justify-content mt'>
+        <div className='d-flex justify-content mtb'>
             <div className='Verify b1 d-flex f-d-col pp justify-content'>
                 <div><h1 className='f-size1 pp1 bb1'>Please verify your e-mail address</h1></div>
                 <div className='p6 color3'>Please check your email account for the verification code we just sent you and enter that code in box below </div>

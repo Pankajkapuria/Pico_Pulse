@@ -5,6 +5,7 @@ import '../SetProfile/SetProfile.css'
 import { Dialog } from '@mui/material';
 import { updateUser } from '../../Actions/user';
 import Loading2 from '../Loading/Loading2';
+import toast from 'react-hot-toast';
 
 
 const SetProfile = () => {
@@ -53,7 +54,7 @@ const SetProfile = () => {
 
     useEffect(() => {
         if (Updateuser && Updateuser.success) {
-            alert('profile update')
+            toast.success('profile update')
             dispatch({
                 type: 'UpdateUserclearMessage'
             })

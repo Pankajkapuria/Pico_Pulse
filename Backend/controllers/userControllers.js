@@ -58,7 +58,7 @@ exports.userregister = async (req, res) => {
         await sendEmail({
             email: email,
             subject: 'Picopulse verificationCode. ',
-            message: `your verificationCode is ${verificationCode}`,
+            message: `your verificationCode is ${verificationCode}. Valid only for 10 minutes.`,
         })
 
 
@@ -153,6 +153,10 @@ exports.logincontroller = async (req, res) => {
             return res.status(400).json({ sucess: false, message: 'password not match' });
         }
 
+        if (!user.verified) {
+            return res.status(400).json({ sucess: false, message: 'Your account is not verified.' });
+        }
+
         const token = await user.creatToken();
         user.password = undefined;
 
@@ -236,11 +240,11 @@ exports.updateProfile = async (req, res) => {
         const user = await usermodel.findById(req.user._id);
         const { name, avater, Bio, gender } = req.body;
 
-
         if (name) {
             user.name = name;
         }
-        if (avater) {
+
+        if (avater && user.avater.url !== avater) {
             await cloudinary.v2.uploader.destroy(user.avater.public_id);
 
             const mycloud = await cloudinary.v2.uploader.upload(avater, {
@@ -266,6 +270,7 @@ exports.updateProfile = async (req, res) => {
         })
     }
     catch (error) {
+        console.log(error)
         res.status(500).json({
             success: false,
             message: error.message

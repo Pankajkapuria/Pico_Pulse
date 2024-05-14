@@ -164,7 +164,7 @@ databaseconnect;
 
 // middle where use
 app.use(cookieparser());
-app.use(express.json({ limit: '50mb' }));
+app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ limit: '20mb', extended: true }))
 
 // routers use
@@ -179,6 +179,6 @@ app.get("*", (req, res) => {
     res.sendFile(path.resolve(__dirname, "../Fronrend/build/index.html"));
 });
 
-module.exports = app;
+module.exports = server;
 
 

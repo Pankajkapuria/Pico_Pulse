@@ -153,7 +153,10 @@ const Messages = () => {
     }
 
     const startCall = async () => {
-        setvideoDialog(true)
+        // setvideoDialog(true)
+        document.getElementById('inbox').style.width = '0px'
+        document.getElementById('inbox').style.height = '0px'
+        document.getElementById('videocall').style.display = 'block'
         if (message?.conversionUser?._id) {
             try {
                 let stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true })
@@ -229,7 +232,10 @@ const Messages = () => {
         setremoteUser(socketId);
         try {
             console.log('offer')
-            setvideoDialog(true);
+            // setvideoDialog(true);
+            document.getElementById('inbox').style.width = '0px'
+            document.getElementById('inbox').style.height = '0px'
+            document.getElementById('videocall').style.display = 'block'
             peerConection.current = new RTCPeerConnection({
                 iceServers: [
                     {
@@ -278,8 +284,11 @@ const Messages = () => {
                     peerConection.current.oniceconnectionstatechange = null;
                     peerConection.current.ontrack = null;
                     peerConection.current = null;
-                    setvideoDialog(false)
+                    // setvideoDialog(false)
                     peerConection.current = null
+                    document.getElementById('inbox').style.width = '100%'
+                    document.getElementById('inbox').style.height = '100%'
+                    document.getElementById('videocall').style.display = 'block'
                 }
             }
 
@@ -293,7 +302,10 @@ const Messages = () => {
         catch (error) {
             toast.error(error?.message)
             socket.current.emit(Actions.CALL_REJECTED, { socketId, message: 'try after some time' })
-            setvideoDialog(false)
+            // setvideoDialog(false)
+            document.getElementById('inbox').style.width = '100%'
+            document.getElementById('inbox').style.height = '100%'
+            document.getElementById('videocall').style.display = 'block'
         }
 
 
@@ -304,7 +316,10 @@ const Messages = () => {
 
     useEffect(() => {
         socket.current?.on(Actions.CALL_REJECTED, ({ msg }) => {
-            setvideoDialog(false)
+            // setvideoDialog(false)
+            document.getElementById('inbox').style.width = '100%'
+            document.getElementById('inbox').style.height = '100%'
+            document.getElementById('videocall').style.display = 'block'
             toast.error(msg)
         })
         socket.current?.on('offer', Incoingclall)
@@ -346,7 +361,10 @@ const Messages = () => {
         peerConection.current.ontrack = null;
         peerConection.current = null;
 
-        setvideoDialog(false)
+        // setvideoDialog(false)
+        document.getElementById('inbox').style.width = '100%'
+        document.getElementById('inbox').style.height = '100%'
+        document.getElementById('videocall').style.display = 'none'
     }
 
     const micOnOff = () => {
@@ -387,7 +405,7 @@ const Messages = () => {
 
     return (
         <>
-            <div className="indox ">
+            <div id='inbox' className="indox">
 
                 <div id='indoxContact' className="indoxContact bright d-flex f-d-col ">
 
@@ -525,6 +543,30 @@ const Messages = () => {
                 </div>
 
             </Dialog>
+
+            <div id='videocall'>
+                <div className="video ">
+                    <div className="videoStream">
+                        <div className="remoteStream">
+                            {remotestream ? <ReactPlayer playing width="100%" height="100%" url={remotestream} /> : <p>call forword</p>}
+                        </div>
+                        <div className="myStream">
+                            {<ReactPlayer playing volume={0} muted width="100%" height="100%" url={mystream} />}
+                        </div>
+                    </div>
+                    <div className="videoHeandleBth d-flex justify-content align-items">
+                        <div>
+                            {VideoOnOff ? <><Videocam onClick={cameraOnOff} style={{ fontSize: '2rem' }} /></> : <> <VideocamOffRounded onClick={cameraOnOff} style={{ fontSize: '2rem' }} /></>}
+                        </div>
+
+                        <div>
+                            {audioOnOff ? <><Mic onClick={micOnOff} style={{ fontSize: '2rem' }} /></> : <><MicOffRounded onClick={micOnOff} style={{ fontSize: '2rem' }} /></>}
+                        </div>
+                        <div onClick={endCall}><CallEndRounded style={{ fontSize: '2rem' }} /></div>
+                    </div>
+                </div>
+            </div>
+
         </>
 
 

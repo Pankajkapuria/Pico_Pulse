@@ -26,7 +26,6 @@ const Login = () => {
         else {
             navigate('/account/login')
         }
-
     }, [isAuthenticated, navigate])
 
 
