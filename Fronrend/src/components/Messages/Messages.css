@@ -6,13 +6,12 @@
 
 .indoxContact {
     height: 99vh;
-
+    overflow-y: auto;
 }
 
 .indoxMessage {
     height: 99vh;
     overflow-y: auto;
-
 }
 
 .Contacts {
@@ -94,16 +93,17 @@
 }
 
 @media only screen and (max-width:500px) {
+    .indox {
+        height: 92vh;
+    }
+
     .indoxContact {
         width: 100vw;
+        height: 92vh;
     }
 
     .indoxMessage {
         width: 0vw;
-    }
-
-    .sendMessage {
-        position: relative;
-        bottom: 37px;
+        height: 92vh;
     }
 }

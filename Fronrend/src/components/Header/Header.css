@@ -102,13 +102,19 @@ a {
 }
 
 @media only screen and (max-width:700px) {
+    .search {
+        width: 86vw;
+    }
+
     .header {
         height: 7vh;
+        justify-content: center;
         position: sticky;
         bottom: 0px;
         background-color: white;
         width: 100%;
         border: none;
+        border-top: 1px solid #c3b4b4;
     }
 
     .header>div:nth-child(3) {
@@ -130,5 +136,10 @@ a {
 
     .header>div:nth-child(1) {
         margin: 0px;
+    }
+
+    .MiddleInside {
+        width: 24px;
+        height: 24px;
     }
 }

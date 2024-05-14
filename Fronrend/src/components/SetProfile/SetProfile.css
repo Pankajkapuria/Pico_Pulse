@@ -27,6 +27,10 @@
 
 
 @media only screen and (max-width:800px) {
+    .setProfile {
+        height: 92vh;
+    }
+
     .setProfileflexright {
         width: 55%;
     }

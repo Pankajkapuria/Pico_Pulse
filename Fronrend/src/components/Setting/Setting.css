@@ -29,6 +29,10 @@
 
 @media only screen and (max-width:950px) {
 
+    .setting {
+        height: 92vh;
+    }
+
     .settingContant {
         flex-direction: column;
         gap: 5vmax;

@@ -103,6 +103,11 @@
 }
 
 @media only screen and (max-width:700px) {
+    .creatImg>img {
+        height: 33vh;
+        width: 92vw;
+    }
+
     .fileSelect {
         width: 100%;
         height: 60vmax;
