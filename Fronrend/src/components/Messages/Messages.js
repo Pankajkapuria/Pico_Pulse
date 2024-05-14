@@ -9,9 +9,7 @@ import Loading from '../Loading/Loading'
 import { io } from 'socket.io-client'
 import axios from 'axios'
 import Actions from '../../Actions/EventActions'
-// import peer from './Peer'
 import { toast } from 'react-hot-toast'
-import { Dialog } from '@mui/material'
 import ReactPlayer from 'react-player'
 
 const Messages = () => {
@@ -27,10 +25,8 @@ const Messages = () => {
     const [remoteUser, setremoteUser] = useState();
     const [mystream, setmystream] = useState(null);
     const [remotestream, setremotestream] = useState(null);
-    const [videoDialog, setvideoDialog] = useState(false);
     const [audioOnOff, setaudioOnOff] = useState(true)
     const [VideoOnOff, setVideoOnOff] = useState(true);
-    // const dialoge = useRef();
 
     const { user } = useSelector((state) => state.user)
     const { getMessageloading, message } = useSelector((state) => state.Message)
@@ -153,7 +149,6 @@ const Messages = () => {
     }
 
     const startCall = async () => {
-        // setvideoDialog(true)
         document.getElementById('inbox').style.width = '0px'
         document.getElementById('inbox').style.height = '0px'
         document.getElementById('videocall').style.display = 'block'
@@ -197,15 +192,16 @@ const Messages = () => {
 
                 peerConection.current.oniceconnectionstatechange = function (event) {
                     if (peerConection.current.iceConnectionState === 'disconnected' || peerConection.current.iceConnectionState === 'closed') {
-                        peerConection.current.getSenders()?.forEach(sender => {
+                        peerConection.current?.getSenders()?.forEach(sender => {
                             sender.track?.stop();
                         });
                         peerConection.current.close()
                         peerConection.current.oniceconnectionstatechange = null;
                         peerConection.current.ontrack = null;
-                        peerConection.current = null;
-                        setvideoDialog(false)
                         peerConection.current = null
+                        document.getElementById('inbox').style.width = '100%'
+                        document.getElementById('inbox').style.height = '100%'
+                        document.getElementById('videocall').style.display = 'block'
                     }
                 }
 
@@ -218,13 +214,17 @@ const Messages = () => {
             }
             catch (error) {
                 toast.error(error?.message)
-                setvideoDialog(false)
+                document.getElementById('inbox').style.width = '100%'
+                document.getElementById('inbox').style.height = '100%'
+                document.getElementById('videocall').style.display = 'block'
             }
 
         }
         else {
             toast.error('call not send please try after some time')
-            setvideoDialog(false)
+            document.getElementById('inbox').style.width = '100%'
+            document.getElementById('inbox').style.height = '100%'
+            document.getElementById('videocall').style.display = 'block'
         }
     }
 
@@ -232,7 +232,6 @@ const Messages = () => {
         setremoteUser(socketId);
         try {
             console.log('offer')
-            // setvideoDialog(true);
             document.getElementById('inbox').style.width = '0px'
             document.getElementById('inbox').style.height = '0px'
             document.getElementById('videocall').style.display = 'block'
@@ -276,16 +275,13 @@ const Messages = () => {
             // for call end
             peerConection.current.oniceconnectionstatechange = function (event) {
                 if (peerConection.current.iceConnectionState === 'disconnected' || peerConection.current.iceConnectionState === 'closed') {
-                    peerConection.current.getSenders()?.forEach(sender => {
-                        console.log(sender)
+                    peerConection.current?.getSenders()?.forEach(sender => {
                         sender.track?.stop();
                     });
                     peerConection.current.close()
                     peerConection.current.oniceconnectionstatechange = null;
                     peerConection.current.ontrack = null;
                     peerConection.current = null;
-                    // setvideoDialog(false)
-                    peerConection.current = null
                     document.getElementById('inbox').style.width = '100%'
                     document.getElementById('inbox').style.height = '100%'
                     document.getElementById('videocall').style.display = 'block'
@@ -316,7 +312,6 @@ const Messages = () => {
 
     useEffect(() => {
         socket.current?.on(Actions.CALL_REJECTED, ({ msg }) => {
-            // setvideoDialog(false)
             document.getElementById('inbox').style.width = '100%'
             document.getElementById('inbox').style.height = '100%'
             document.getElementById('videocall').style.display = 'block'
@@ -405,6 +400,7 @@ const Messages = () => {
 
     return (
         <>
+
             <div id='inbox' className="indox">
 
                 <div id='indoxContact' className="indoxContact bright d-flex f-d-col ">
@@ -512,37 +508,6 @@ const Messages = () => {
 
                 </div>
             </div>
-
-            <Dialog open={videoDialog} onClose={() => {
-                setvideoDialog(false);
-            }}>
-
-                <div id='callAccepted'></div>
-
-                <div>
-                    <div className="video ">
-                        <div className="videoStream">
-                            <div className="remoteStream">
-                                {remotestream ? <ReactPlayer playing width="100%" height="100%" url={remotestream} /> : <p>call forword</p>}
-                            </div>
-                            <div className="myStream">
-                                {<ReactPlayer playing volume={0} muted width="100%" height="100%" url={mystream} />}
-                            </div>
-                        </div>
-                        <div className="videoHeandleBth d-flex justify-content align-items">
-                            <div>
-                                {VideoOnOff ? <><Videocam onClick={cameraOnOff} style={{ fontSize: '2rem' }} /></> : <> <VideocamOffRounded onClick={cameraOnOff} style={{ fontSize: '2rem' }} /></>}
-                            </div>
-
-                            <div>
-                                {audioOnOff ? <><Mic onClick={micOnOff} style={{ fontSize: '2rem' }} /></> : <><MicOffRounded onClick={micOnOff} style={{ fontSize: '2rem' }} /></>}
-                            </div>
-                            <div onClick={endCall}><CallEndRounded style={{ fontSize: '2rem' }} /></div>
-                        </div>
-                    </div>
-                </div>
-
-            </Dialog>
 
             <div id='videocall'>
                 <div className="video ">

@@ -53,8 +53,6 @@
 }
 
 .video {
-    width: 100vw;
-    height: 100vh;
     display: grid;
     grid-auto-rows: 85vh 1fr;
 }
